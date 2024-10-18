@@ -1,11 +1,11 @@
 #include <fmt/format.h>
-#include <greeter/greeter.h>
+#include <pinedb/pinedb.h>
 
-using namespace greeter;
+using namespace pinedb;
 
-Greeter::Greeter(std::string _name) : name(std::move(_name)) {}
+PineDB::PineDB(std::string _name) : name(std::move(_name)) {}
 
-std::string Greeter::greet(LanguageCode lang) const {
+std::string PineDB::greet(LanguageCode lang) const {
   switch (lang) {
     default:
     case LanguageCode::EN:
