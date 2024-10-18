@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/ananthvk/pinedb/branch/master/graph/badge.svg)](https://codecov.io/gh/ananthvk/pinedb)
 
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/254842585/4dfa7580-7ffb-11ea-99d0-46b8fe2f4170" height="175" width="auto" />
+  <img src="https://repository-images.githubusercontent.com/874815925/09c2ebf4-a127-47e2-9e48-7a6044c86923" height="200" width="auto" />
 </p>
 
 # PineDB
