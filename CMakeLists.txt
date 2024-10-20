@@ -34,9 +34,15 @@ CPMAddPackage(
 )
 
 # ---- Add source files ----
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
+#set(headers
+#    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/page.h
+#)
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
 
