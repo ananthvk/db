@@ -37,6 +37,7 @@ CPMAddPackage(
     GITHUB_REPOSITORY gabime/spdlog 
     VERSION 1.14.1 
     OPTIONS "SPDLOG_FMT_EXTERNAL 1" 
+    OPTIONS "SPDLOG_INSTALL YES"
 )
 
 
@@ -64,7 +65,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt PUBLIC)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
