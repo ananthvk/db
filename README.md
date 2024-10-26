@@ -29,6 +29,12 @@ cmake --build build/standalone
 ./build/standalone/PineDB --help
 ```
 
+### Build for development
+```bash
+cmake -S standalone -B build -DUSE_SANITIZER='Address;Undefined' -DUSE_STATIC_ANALYZER=clang-tidy
+
+```
+
 ### Build and run test suite
 
 Use the following commands from the project's root directory to run the test suite.
