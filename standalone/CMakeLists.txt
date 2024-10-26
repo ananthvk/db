@@ -10,11 +10,11 @@ include(../cmake/tools.cmake)
 
 include(../cmake/CPM.cmake)
 
-CPMAddPackage(
-  GITHUB_REPOSITORY jarro2783/cxxopts
-  VERSION 3.0.0
-  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
-)
+#CPMAddPackage(
+#  GITHUB_REPOSITORY jarro2783/cxxopts
+#  VERSION 3.0.0
+#  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
+#)
 
 CPMAddPackage(NAME PineDB SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
@@ -26,4 +26,4 @@ add_executable(${PROJECT_NAME} ${sources})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "PineDB")
 
-target_link_libraries(${PROJECT_NAME} PineDB::PineDB cxxopts)
+target_link_libraries(${PROJECT_NAME} PineDB::PineDB)
