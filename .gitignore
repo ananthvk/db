@@ -3,3 +3,4 @@
 /cpm_modules
 .DS_Store
 .venv/
+db_file*

@@ -1,4 +1,6 @@
+#include <pinedb/config.h>
 #include <pinedb/pinedb.h>
+#include <pinedb/storage.h>
 #include <pinedb/version.h>
 
 #include <cxxopts.hpp>
@@ -7,24 +9,12 @@
 #include <unordered_map>
 
 auto main(int argc, char** argv) -> int {
-  const std::unordered_map<std::string, pinedb::LanguageCode> languages{
-      {"en", pinedb::LanguageCode::EN},
-      {"de", pinedb::LanguageCode::DE},
-      {"es", pinedb::LanguageCode::ES},
-      {"fr", pinedb::LanguageCode::FR},
-  };
-
-  cxxopts::Options options(*argv, "A program to welcome the world!");
-
-  std::string language;
-  std::string name;
+  cxxopts::Options options(*argv, "PineDB server program");
 
   // clang-format off
   options.add_options()
     ("h,help", "Show help")
     ("v,version", "Print the current version number")
-    ("n,name", "Name to greet", cxxopts::value(name)->default_value("World"))
-    ("l,lang", "Language code to use", cxxopts::value(language)->default_value("en"))
   ;
   // clang-format on
 
@@ -40,14 +30,8 @@ auto main(int argc, char** argv) -> int {
     return 0;
   }
 
-  auto langIt = languages.find(language);
-  if (langIt == languages.end()) {
-    std::cerr << "unknown language code: " << language << std::endl;
-    return 1;
-  }
-
-  pinedb::PineDB pinedb(name);
-  std::cout << pinedb.greet(langIt->second) << std::endl;
+  pinedb::DiskStorageBackend b("db_file_1", pinedb::config::PAGE_SIZE);
+  b.create_new_page();
 
   return 0;
 }
