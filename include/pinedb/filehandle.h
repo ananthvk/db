@@ -1,5 +1,11 @@
 #ifndef PINEDB_FILEHANDLE_H
 #define PINEDB_FILEHANDLE_H
+#if defined(_MSC_VER)
+#    include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+
+#endif
+
 #ifdef _WIN32
 #    include <fcntl.h>
 #    include <io.h>
