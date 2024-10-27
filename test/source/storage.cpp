@@ -9,6 +9,8 @@ using namespace pinedb;
 TEST_CASE("DiskStorageBackend creates a new page")
 {
     std::string tempFilename = "temp_test_file.dat";
+    // Clean up the temporary file
+    std::filesystem::remove(tempFilename);
     size_t pageSize = 4096; // Example page size
 
     // Create an instance of DiskStorageBackend
@@ -32,6 +34,4 @@ TEST_CASE("DiskStorageBackend creates a new page")
         CHECK(buffer[i] == 0);
     }
 
-    // Clean up the temporary file
-    std::filesystem::remove(tempFilename);
 }
