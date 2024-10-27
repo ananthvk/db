@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>PineDB</title>
+  <title>FileHandle class | PineDB</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <link rel="icon" href="favicon-dark.png" type="image/png" />
@@ -33,7 +33,7 @@
             <li><a href="namespaces.html">Namespaces</a></li>
           </ol>
           <ol class="m-col-t-6 m-col-m-none" start="3">
-            <li><a href="annotated.html" id="m-navbar-current">Classes</a></li>
+            <li><a href="annotated.html">Classes</a></li>
             <li><a href="files.html">Files</a></li>
             <li class="m-show-m"><a href="#search" class="m-doc-search-icon" title="Search" onclick="return showSearch()"><svg style="height: 0.9rem;" viewBox="0 0 16 16">
               <use href="#m-doc-search-icon-path" />
@@ -48,36 +48,70 @@
   <div class="m-container m-container-inflatable">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        <h1>Classes</h1>
-        <ul class="m-doc">
-          <li class="m-doc-collapsible">
-            <a href="#" onclick="return toggle(this)">namespace</a> <a href="namespacepinedb.html" class="m-doc">pinedb</a> <span class="m-doc"><span></span></span>
-            <ul class="m-doc">
-              <li>namespace <a href="namespacepinedb_1_1config.html" class="m-doc">config</a> <span class="m-doc"><span></span></span></li>
-              <li>class <a href="classpinedb_1_1_disk_storage_backend.html" class="m-doc">DiskStorageBackend</a> <span class="m-doc"><span></span></span></li>
-              <li>class <a href="classpinedb_1_1_page.html" class="m-doc">Page</a> <span class="m-doc"><span></span></span></li>
-              <li>class <a href="classpinedb_1_1_pine_d_b.html" class="m-doc">PineDB</a> <span class="m-doc">A class for saying hello in multiple languages.</span></li>
-              <li>class <a href="classpinedb_1_1_storage_backend.html" class="m-doc">StorageBackend</a> <span class="m-doc"></span></li>
-            </ul>
-          </li>
-          <li>class <a href="class_file_handle.html" class="m-doc">FileHandle</a> <span class="m-doc"><span></span></span></li>
-        </ul>
-        <script>
-        function toggle(e) {
-            e.parentElement.className = e.parentElement.className == 'm-doc-collapsible' ?
-                'm-doc-expansible' : 'm-doc-collapsible';
-            return false;
-        }
-        /* Collapse all nodes marked as such. Doing it via JS instead of
-           directly in markup so disabling it doesn't harm usability. The list
-           is somehow regenerated on every iteration and shrinks as I change
-           the classes. It's not documented anywhere and I'm not sure if this
-           is the same across browsers, so I am going backwards in that list to
-           be sure. */
-        var collapsed = document.getElementsByClassName("collapsed");
-        for(var i = collapsed.length - 1; i >= 0; --i)
-            collapsed[i].className = 'm-doc-expansible';
-        </script>
+        <h1>
+          FileHandle <span class="m-thin">class</span>
+          <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="filehandle_8h.html">&lt;pinedb/filehandle.h&gt;</a></div>
+        </h1>
+        <p><span></span></p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <section id="typeless-methods">
+          <h2><a href="#typeless-methods">Constructors, destructors, conversion operators</a></h2>
+          <dl class="m-doc">
+            <dt id="a82b120a28b10d0637d84e490fbc9836a">
+              <span class="m-doc-wrap-bumper"><a href="#a82b120a28b10d0637d84e490fbc9836a" class="m-doc-self">~FileHandle</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="af72b403830df23dfabe8849617a54006">
+              <span class="m-doc-wrap-bumper">auto <a href="#af72b403830df23dfabe8849617a54006" class="m-doc-self">open</a>(</span><span class="m-doc-wrap">const std::string&amp; file_path,
+              int flags,
+              int mode = 0) -&gt; bool</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a3a82594295c24b08b16d1e83b2f7fce0">
+              <span class="m-doc-wrap-bumper">auto <a href="#a3a82594295c24b08b16d1e83b2f7fce0" class="m-doc-self">get</a>(</span><span class="m-doc-wrap">) const -&gt; int</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="aa383fbe2945e29164fba9ff4f4744221">
+              <span class="m-doc-wrap-bumper">auto <a href="#aa383fbe2945e29164fba9ff4f4744221" class="m-doc-self">seek</a>(</span><span class="m-doc-wrap">off_t offset,
+              int whence) -&gt; off_t</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a758270df74d8fe237954099f7134e1b3">
+              <span class="m-doc-wrap-bumper">auto <a href="#a758270df74d8fe237954099f7134e1b3" class="m-doc-self">read</a>(</span><span class="m-doc-wrap">void* buffer,
+              size_t size) -&gt; ssize_t</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a0c7b461677201faabe0f2a26ab8f7bf3">
+              <span class="m-doc-wrap-bumper">auto <a href="#a0c7b461677201faabe0f2a26ab8f7bf3" class="m-doc-self">write</a>(</span><span class="m-doc-wrap">const void* buffer,
+              size_t size) -&gt; ssize_t</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a7683b7e2494f7fb6676feb352eb5741e">
+              <span class="m-doc-wrap-bumper">auto <a href="#a7683b7e2494f7fb6676feb352eb5741e" class="m-doc-self">close</a>(</span><span class="m-doc-wrap">) -&gt; bool</span>
+            </dt>
+            <dd><span></span></dd>
+            <dt id="a839c5fddf6031549217bf820c94fd413">
+              <span class="m-doc-wrap-bumper">auto <a href="#a839c5fddf6031549217bf820c94fd413" class="m-doc-self">closed</a>(</span><span class="m-doc-wrap">) -&gt; bool</span>
+            </dt>
+            <dd><span></span></dd>
+          </dl>
+        </section>
       </div>
     </div>
   </div>
