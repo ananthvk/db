@@ -13,7 +13,9 @@ namespace pinedb
         constexpr page_size_type PAGE_SIZE = 1 << 12; // Default page size of 4KiB
         constexpr int NUMBER_OF_FRAMES = 1 << 15; // Number of frames to hold in memory: 32768, i.e.
                                                   // max size of buffer pool is 128MB
+        constexpr page_size_type PAGE_LOG_BYTES
+            = 16; // First 16 bytes of a page are logged when the page is read/written
 
     }; // namespace config
-};     // namespace pinedb
+}; // namespace pinedb
 #endif // PIENDB_CONFIG_H

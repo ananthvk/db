@@ -54,8 +54,9 @@ namespace pinedb
 
         /**
          * @brief Closes the storage backend
+         * @return true if the backend was closed / has been closed, false otherwise
          */
-        virtual void close() = 0;
+        virtual bool close() = 0;
 
         // Virtual destructor
         virtual ~StorageBackend() {}
@@ -67,6 +68,7 @@ namespace pinedb
         std::string file_path;
         page_size_type page_sz;
         int fd;
+        // Holds the id of the next page to be created
         int current_page_id_counter;
 
       public:
@@ -76,7 +78,7 @@ namespace pinedb
         bool write_page(page_id_type page_id, uint8_t *buffer);
         bool delete_page(page_id_type page_id);
         page_size_type page_size();
-        void close();
+        bool close();
         ~DiskStorageBackend();
     };
 } // namespace pinedb

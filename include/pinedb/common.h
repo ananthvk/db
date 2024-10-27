@@ -5,8 +5,8 @@
 
 namespace pinedb
 {
-    using page_id_type = int32_t;
-    using page_size_type = int32_t;
-    using frame_id_type = int32_t;
+    using page_id_type = int64_t;
+    using page_size_type = int64_t;
+    using frame_id_type = int64_t;
 };     // namespace pinedb
 #endif // PIENDB_COMMON_H

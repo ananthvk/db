@@ -22,6 +22,13 @@ CPMAddPackage(NAME PineDB SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
 
+if (MSVC)
+    add_compile_options(/W4)
+    target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 add_executable(${PROJECT_NAME} ${sources})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "PineDB")
