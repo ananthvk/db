@@ -34,23 +34,20 @@ CPMAddPackage(
 )
 
 CPMAddPackage(
-    GITHUB_REPOSITORY gabime/spdlog 
-    VERSION 1.14.1 
-    OPTIONS "SPDLOG_FMT_EXTERNAL 1" 
-    OPTIONS "SPDLOG_INSTALL YES"
+  GITHUB_REPOSITORY gabime/spdlog
+  VERSION 1.14.1
+  OPTIONS "SPDLOG_FMT_EXTERNAL 1"
+  OPTIONS "SPDLOG_INSTALL YES"
 )
-
 
 # ---- Add source files ----
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
-# automatically. Keep that in mind when changing files, or explicitly mention them here.
-#set(headers
-#    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/page.h
-#)
+# automatically. Keep that in mind when changing files, or explicitly mention them here. set(headers
+# ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
+# ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/page.h )
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
 
@@ -62,11 +59,11 @@ add_library(${PROJECT_NAME} ${headers} ${sources})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 
 # being a cross-platform target, we enforce standards conformance on MSVC
-if (MSVC)
-    add_compile_options(/W4)
-    target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
+if(MSVC)
+  add_compile_options(/W4)
+  target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # Link dependencies

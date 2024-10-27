@@ -33,5 +33,4 @@ TEST_CASE("DiskStorageBackend creates a new page")
     {
         CHECK(buffer[i] == 0);
     }
-
 }

@@ -17,5 +17,5 @@ namespace pinedb
             = 16; // First 16 bytes of a page are logged when the page is read/written
 
     }; // namespace config
-}; // namespace pinedb
+};     // namespace pinedb
 #endif // PIENDB_CONFIG_H
