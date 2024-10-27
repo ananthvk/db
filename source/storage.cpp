@@ -15,6 +15,8 @@ DiskStorageBackend::DiskStorageBackend(const std::string &file_path, page_size_t
 #ifdef _WIN32
     // Use _open instead of open on Windows
     if (!file_handle.open(file_path.c_str(), _O_CREAT | _O_RDWR | _O_BINARY, _S_IREAD | _S_IWRITE))
+#elif defined(__APPLE__)
+    if (!file_handle.open(file_path.c_str(), O_CREAT | O_RDWR, 0644))
 #else
     if (!file_handle.open(file_path.c_str(), O_CREAT | O_DIRECT | O_RDWR | O_SYNC, 0644))
 #endif
