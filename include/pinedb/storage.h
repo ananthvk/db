@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#include <pinedb/filehandle.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string>
@@ -67,7 +68,7 @@ namespace pinedb
       private:
         std::string file_path;
         page_size_type page_sz;
-        int fd;
+        FileHandle file_handle;
         // Holds the id of the next page to be created
         int current_page_id_counter;
 

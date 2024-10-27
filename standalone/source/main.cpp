@@ -14,8 +14,8 @@ auto main(int argc, char **argv) -> int
     buf[1] = 0xB;
     buf[2] = 0xC;
     buf[3] = 0xD;
-    b.write_page(3, buf);
-    b.read_page(3, buf);
+    b.write_page(3906250000, buf);
+    b.read_page(3906250000, buf);
 
     return 0;
 }
