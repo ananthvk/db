@@ -101,7 +101,7 @@ bool DiskStorageBackend::write_page(page_id_type page_id, uint8_t *buffer)
 
 bool DiskStorageBackend::delete_page(page_id_type page_id)
 {
-    spdlog::info("Deleting page {}", page_id);
+    spdlog::info("Deleting page [{}]", page_id);
     // There is no free list management for now, so if a page is deleted
     // It is just zeroed out for now
     std::unique_ptr<uint8_t[]> buf(new uint8_t[page_sz]);
