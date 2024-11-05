@@ -50,7 +50,7 @@ bool DiskStorageBackend::read_page(page_id_type page_id, uint8_t *buffer)
 {
     // Pages are stored contiguously in the file, so the n th page is
     // at location n * page_sz
-    auto offset = page_id * page_sz;
+    int64_t offset = static_cast<int64_t>(page_id) * page_sz;
     if (file_handle.seek(offset, SEEK_SET) == -1)
     {
         // TODO: seek outside file still works
@@ -77,7 +77,7 @@ bool DiskStorageBackend::read_page(page_id_type page_id, uint8_t *buffer)
 bool DiskStorageBackend::write_page(page_id_type page_id, uint8_t *buffer)
 {
     // Overwrites the page at offset with the new data
-    auto offset = page_id * page_sz;
+    int64_t offset = static_cast<int64_t>(page_id) * page_sz;
     if (file_handle.seek(offset, SEEK_SET) == -1)
     {
         spdlog::info("Could not write page {}: {}", page_id, strerror(errno));
