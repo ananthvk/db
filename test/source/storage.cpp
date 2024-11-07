@@ -31,7 +31,7 @@ TEST_CASE("DiskStorageBackend creates a new page")
     }
     storageBackend.create_new_page();
     file.close();
-
+    storageBackend.close();
     std::filesystem::remove(tempFilename);
 }
 
@@ -190,7 +190,7 @@ TEST_CASE("MemoryStorageBackend create/read/write/delete")
     buffer[2] = 97;
     buffer[4095] = 36;
     CHECK(backend.write_page(page2, buffer.data()));
-    
+
     CHECK(backend.read_page(page1, buffer.data()));
     CHECK(buffer[0] == 111);
     CHECK(buffer[1] == 222);
@@ -202,7 +202,7 @@ TEST_CASE("MemoryStorageBackend create/read/write/delete")
     CHECK(buffer[1] == 98);
     CHECK(buffer[2] == 97);
     CHECK(buffer[4095] == 36);
-    
+
     CHECK(backend.delete_page(page1));
     CHECK(backend.read_page(page1, buffer.data()) == false);
     CHECK(backend.delete_page(page2));
