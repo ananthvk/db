@@ -103,7 +103,8 @@ bool DiskStorageBackend::delete_page(page_id_type page_id)
 {
     spdlog::info("Deleting page [{}]", page_id);
     // There is no free list management for now, so if a page is deleted
-    // It is just zeroed out for now
+    // It is just zeroed out for now, free page management to be implemented by
+    // another class
     std::unique_ptr<uint8_t[]> buf(new uint8_t[page_sz]);
     memset(buf.get(), 0, page_sz);
     return write_page(page_id, buf.get());
@@ -134,3 +135,51 @@ DiskStorageBackend::~DiskStorageBackend()
         return;
     DiskStorageBackend::close();
 }
+
+MemoryStorageBackend::MemoryStorageBackend(page_size_type page_sz)
+    : page_sz(page_sz), current_page_id_counter(0)
+{
+}
+
+page_id_type MemoryStorageBackend::create_new_page()
+{
+    pages[++current_page_id_counter] = std::vector<uint8_t>(page_sz, 0);
+    return current_page_id_counter;
+}
+
+bool MemoryStorageBackend::read_page(page_id_type page_id, uint8_t *buffer)
+{
+    auto iter = pages.find(page_id);
+    if (iter == pages.end())
+        return false;
+    std::copy(iter->second.begin(), iter->second.end(), buffer);
+    return true;
+}
+
+bool MemoryStorageBackend::write_page(page_id_type page_id, uint8_t *buffer)
+{
+    auto iter = pages.find(page_id);
+    if (iter == pages.end())
+        return false;
+    std::copy(buffer, buffer + page_sz, iter->second.begin());
+    return true;
+}
+
+bool MemoryStorageBackend::delete_page(page_id_type page_id)
+{
+    auto iter = pages.find(page_id);
+    if (iter == pages.end())
+        return false;
+    pages.erase(iter);
+    return true;
+}
+
+page_size_type MemoryStorageBackend::page_size() { return page_sz; }
+
+bool MemoryStorageBackend::close()
+{
+    pages.clear();
+    return true;
+}
+
+MemoryStorageBackend::~MemoryStorageBackend() { close(); }

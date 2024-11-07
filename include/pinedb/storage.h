@@ -3,10 +3,12 @@
 
 #include "common.h"
 
+#include <map>
 #include <pinedb/filehandle.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace pinedb
 {
@@ -81,6 +83,25 @@ namespace pinedb
         page_size_type page_size();
         bool close();
         ~DiskStorageBackend();
+    };
+
+    class MemoryStorageBackend : public StorageBackend
+    {
+      private:
+        page_size_type page_sz;
+        // Holds the id of the next page to be created
+        int current_page_id_counter;
+        std::map<page_id_type, std::vector<uint8_t>> pages;
+
+      public:
+        MemoryStorageBackend(page_size_type page_sz);
+        page_id_type create_new_page();
+        bool read_page(page_id_type page_id, uint8_t *buffer);
+        bool write_page(page_id_type page_id, uint8_t *buffer);
+        bool delete_page(page_id_type page_id);
+        page_size_type page_size();
+        bool close();
+        ~MemoryStorageBackend();
     };
 } // namespace pinedb
 #endif // PINEDB_STORAGE_H
