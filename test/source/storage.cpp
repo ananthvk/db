@@ -172,6 +172,18 @@ TEST_CASE("DiskStorageBackend delete a page")
     std::filesystem::remove(tempFilename);
 }
 
+TEST_CASE("DiskStorageBackend returns false for invalid page")
+{
+    DiskStorageBackend storage("tmpfile", 4096);
+    auto pageid = storage.create_new_page();
+    std::vector<uint8_t> buffer(4096, 0);
+    CHECK(storage.read_page((pageid + 100), buffer.data()) == false);
+    
+    CHECK(storage.read_page(pageid, buffer.data()));
+    storage.close();
+    std::filesystem::remove("tmpfile");
+}
+
 TEST_CASE("MemoryStorageBackend create/read/write/delete")
 {
     page_size_type pageSize = 4096;

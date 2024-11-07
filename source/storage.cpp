@@ -23,6 +23,15 @@ DiskStorageBackend::DiskStorageBackend(const std::string &file_path, page_size_t
         spdlog::error("Could not open DiskStorageBackend(\"{}\"): {}", file_path, strerror(errno));
         exit(1);
     }
+    off_t offset;
+    if ((offset = file_handle.seek(0, SEEK_END)) == -1)
+    {
+        spdlog::error("Could not seek to end of file to determine number of pages {}",
+                      strerror(errno));
+        exit(1);
+    }
+    current_page_id_counter = offset / page_sz;
+
     spdlog::info("Opened DiskStorageBackend(\"{}\")", file_path);
 }
 
@@ -50,10 +59,14 @@ bool DiskStorageBackend::read_page(page_id_type page_id, uint8_t *buffer)
 {
     // Pages are stored contiguously in the file, so the n th page is
     // at location n * page_sz
+
+    // Check if the page id is valid
+    if (page_id > current_page_id_counter)
+        return false;
+
     int64_t offset = static_cast<int64_t>(page_id) * page_sz;
     if (file_handle.seek(offset, SEEK_SET) == -1)
     {
-        // TODO: seek outside file still works
         spdlog::info("Could not read page {}: {}", page_id, strerror(errno));
         return false;
     }
