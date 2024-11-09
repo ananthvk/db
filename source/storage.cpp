@@ -10,7 +10,7 @@
 using namespace pinedb;
 
 DiskStorageBackend::DiskStorageBackend(const std::string &file_path, page_size_type page_sz)
-    : file_path(file_path), page_sz(page_sz), current_page_id_counter(0)
+    : file_path(file_path), page_sz(page_sz), current_page_id_counter(0), zerobuffer(page_sz, 0)
 {
 #ifdef _WIN32
     if (!file_handle.open(file_path.c_str(), _O_CREAT | _O_RDWR | _O_BINARY, _S_IREAD | _S_IWRITE))
@@ -44,9 +44,7 @@ page_id_type DiskStorageBackend::create_new_page()
         return -1;
     }
     current_page_id_counter = offset / page_sz;
-    std::unique_ptr<char[]> buf(new char[page_sz]);
-    memset(buf.get(), 0, page_sz);
-    if (file_handle.write(buf.get(), page_sz) == -1)
+    if (file_handle.write(zerobuffer.data(), page_sz) == -1)
     {
         spdlog::error("Could not create new page write: {}", strerror(errno));
         return -1;
@@ -118,9 +116,7 @@ bool DiskStorageBackend::delete_page(page_id_type page_id)
     // There is no free list management for now, so if a page is deleted
     // It is just zeroed out for now, free page management to be implemented by
     // another class
-    std::unique_ptr<uint8_t[]> buf(new uint8_t[page_sz]);
-    memset(buf.get(), 0, page_sz);
-    return write_page(page_id, buf.get());
+    return write_page(page_id, zerobuffer.data());
 }
 
 page_size_type DiskStorageBackend::page_size() { return page_sz; }

@@ -73,6 +73,9 @@ namespace pinedb
         FileHandle file_handle;
         // Holds the id of the next page to be created
         int current_page_id_counter;
+        // Optimization: Hold a zero buffer so that when new pages are created, a new buffer
+        // containing only zeroes is not created
+        std::vector<uint8_t> zerobuffer;
 
       public:
         DiskStorageBackend(const std::string &file_path, page_size_type page_sz);
