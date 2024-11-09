@@ -45,11 +45,21 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
-# automatically. Keep that in mind when changing files, or explicitly mention them here. set(headers
-# ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
-# ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/page.h )
-file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
+# automatically. Keep that in mind when changing files, or explicitly mention them here.
+set(headers
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/bufferpool.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/cachereplacer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/common.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/filehandle.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/storage.h
+)
+set(sources
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/bufferpool.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/pinedb.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/storage.cpp
+)
 
 # ---- Create library ----
 
