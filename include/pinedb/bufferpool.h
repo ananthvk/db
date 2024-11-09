@@ -58,18 +58,18 @@ namespace pinedb
          * the page can be unloaded.
          */
         bool unpin_page(page_id_type pageid);
-        
+
         /**
          * Sets the page as dirty, i.e. data has been modified, this has to be called
          * by all functions which have modified the page data.
          * @return true if the page is in the buffer pool, otherwise false
          */
         bool set_dirty(page_id_type pageid);
-        
+
         /**
          * Flushes all dirty pages to the disk
          */
         void flush_all();
     };
-}; // namespace pinedb
+};     // namespace pinedb
 #endif // PINEDB_BUFFERPOOL_H

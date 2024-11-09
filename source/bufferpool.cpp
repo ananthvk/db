@@ -3,7 +3,7 @@
 
 using namespace pinedb;
 
-BufferPool::BufferPool(int number_of_frames, StorageBackend& storage_backend)
+BufferPool::BufferPool(int number_of_frames, StorageBackend &storage_backend)
     : number_of_frames(number_of_frames),
       storage_backend(storage_backend),
       buffer(this->storage_backend.page_size() * number_of_frames, 0),

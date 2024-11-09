@@ -56,8 +56,7 @@ set(headers
     ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/storage.h
 )
 set(sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/bufferpool.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/pinedb.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/bufferpool.cpp ${CMAKE_CURRENT_SOURCE_DIR}/source/pinedb.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/storage.cpp
 )
 

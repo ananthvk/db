@@ -83,6 +83,5 @@ TEST_SUITE("bufferpool")
         pool.set_dirty(page2);
         pool.set_dirty(page3);
         pool.flush_all();
-
     }
 }
