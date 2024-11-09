@@ -106,4 +106,19 @@ TEST_SUITE("bufferpool")
             
         }
     }
+    
+    TEST_CASE("Invalid page id test cases")
+    {
+        page_size_type page_size = 128;
+        int number_of_frames = 8;
+        std::vector<uint8_t> buffer(page_size, 0);
+        MemoryStorageBackend memory_backend(page_size);
+        StorageBackend &storage = memory_backend;
+        BufferPool pool(number_of_frames, storage);
+        pool.new_page();
+        pool.new_page();
+        pool.new_page();
+        pool.delete_page(9999);
+        pool.set_dirty(9999);
+    }
 }
