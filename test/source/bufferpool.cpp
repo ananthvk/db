@@ -87,7 +87,8 @@ TEST_SUITE("bufferpool")
         CHECK(pool.fetch_page(page2) == page2_buffer);
         CHECK(pool.fetch_page(page3) == page3_buffer);
 
-        SUBCASE("fetch page"){
+        SUBCASE("fetch page")
+        {
             BufferPool pool2(number_of_frames, storage);
             auto page1_buffer_2 = pool2.fetch_page(page1);
             auto page2_buffer_2 = pool2.fetch_page(page2);
@@ -103,10 +104,9 @@ TEST_SUITE("bufferpool")
             CHECK(page2_buffer_2[1] == 'D');
             CHECK(page3_buffer_2[0] == 'E');
             CHECK(page3_buffer_2[1] == 'F');
-            
         }
     }
-    
+
     TEST_CASE("Invalid page id test cases")
     {
         page_size_type page_size = 128;
