@@ -83,5 +83,27 @@ TEST_SUITE("bufferpool")
         pool.set_dirty(page2);
         pool.set_dirty(page3);
         pool.flush_all();
+        CHECK(pool.fetch_page(page1) == page1_buffer);
+        CHECK(pool.fetch_page(page2) == page2_buffer);
+        CHECK(pool.fetch_page(page3) == page3_buffer);
+
+        SUBCASE("fetch page"){
+            BufferPool pool2(number_of_frames, storage);
+            auto page1_buffer_2 = pool2.fetch_page(page1);
+            auto page2_buffer_2 = pool2.fetch_page(page2);
+            auto page3_buffer_2 = pool2.fetch_page(page3);
+            CHECK(page1_buffer_2 != nullptr);
+            CHECK(page2_buffer_2 != nullptr);
+            CHECK(page3_buffer_2 != nullptr);
+            CHECK(pool2.fetch_page(999) == nullptr);
+
+            CHECK(page1_buffer_2[0] == 'A');
+            CHECK(page1_buffer_2[1] == 'B');
+            CHECK(page2_buffer_2[0] == 'C');
+            CHECK(page2_buffer_2[1] == 'D');
+            CHECK(page3_buffer_2[0] == 'E');
+            CHECK(page3_buffer_2[1] == 'F');
+            
+        }
     }
 }

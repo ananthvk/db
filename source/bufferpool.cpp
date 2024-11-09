@@ -16,26 +16,32 @@ BufferPool::BufferPool(int number_of_frames, StorageBackend &storage_backend)
 
 uint8_t *BufferPool::fetch_page(page_id_type pageid)
 {
+    spdlog::info("Fetching page {}", pageid);
     // The page was found in the pool
     auto iter = page_to_frame_map.find(pageid);
     if (iter != page_to_frame_map.end())
     {
+        spdlog::info("Page {} found in cache", pageid);
         return get_buffer_ptr(iter->second);
     }
 
     // A page fault has occured, read the page from the disk
     // Find a free frame to hold the read out page
     if (free_frames.empty())
+    {
+        spdlog::info("No free frames left, trying to evict a page");
         // TODO: No free frames, use cache replacer here to evict a page
         return nullptr;
+    }
     auto frame_id = free_frames.back();
     free_frames.pop_back();
-    auto frameid = iter->second;
 
-    bool status = storage_backend.read_page(pageid, get_buffer_ptr(frameid));
+    spdlog::info("Page fault occured, reading page {} to frame {}", pageid, frame_id);
+    bool status = storage_backend.read_page(pageid, get_buffer_ptr(frame_id));
     if (!status)
     {
         // The page could not be read
+        spdlog::info("Could not read page {}, freeing frame {}", pageid, frame_id);
         free_frames.push_back(frame_id);
         return nullptr;
     }
