@@ -35,9 +35,9 @@ A database is represented on the disk as a collection of files, with `pagedata` 
 - [ ] Free page management (free list/bitmap) for disk storage
 - [ ] Metadata reader/writer implementation
 - [ ] Database lockfile
-- [ ] Buffer pool manager
+- [x] Buffer pool manager
 - [ ] Extendible hash table
-- [ ] Cache replacer
+- [x] Cache replacer
 - [ ] Simple KV store supporting only small strings 
 - [ ] Support for integers, floats
 - [ ] Arrays

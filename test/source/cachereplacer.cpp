@@ -70,7 +70,6 @@ TEST_SUITE("lrucachereplacer")
         opt = replacer.evict();
         opt = replacer.evict();
         CHECK(opt.has_value() == false);
-
     }
 
     TEST_CASE("LRU Cache eviction and set_evictable")
@@ -104,7 +103,7 @@ TEST_SUITE("lrucachereplacer")
         replacer.set_evictable(1, false);
         opt = replacer.evict();
         CHECK(opt.value() == 2);
-        
+
         replacer.set_evictable(0, true);
         replacer.set_evictable(1, true);
         opt = replacer.evict();

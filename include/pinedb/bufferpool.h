@@ -1,5 +1,6 @@
 #ifndef PINEDB_BUFFERPOOL_H
 #define PINEDB_BUFFERPOOL_H
+#include "cachereplacer.h"
 #include "storage.h"
 
 #include <map>
@@ -15,8 +16,10 @@ namespace pinedb
     {
         int number_of_frames;
         StorageBackend &storage_backend;
+        CacheReplacer<frame_id_type> &cache_replacer;
         std::vector<uint8_t> buffer;
         std::map<page_id_type, frame_id_type> page_to_frame_map;
+        std::map<frame_id_type, page_id_type> frame_to_page_map;
         // TODO: Simple free frame management, implex more complex schemes such as bitmap later
         std::vector<frame_id_type> free_frames;
         std::vector<bool> dirty_frames;
@@ -27,8 +30,15 @@ namespace pinedb
             return buffer.data() + (frameid * storage_backend.page_size());
         }
 
+        /**
+         * Evicts a frame
+         * @return true if a frame could be evicted, otherwise false
+         */
+        bool evict();
+
       public:
-        BufferPool(int number_of_frames, StorageBackend &storage_backend);
+        BufferPool(int number_of_frames, StorageBackend &storage_backend,
+                   CacheReplacer<frame_id_type> &cache_replacer);
 
         /**
          * Fetches the page with the given page id
