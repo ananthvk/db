@@ -10,10 +10,112 @@
 </p>
 
 # PineDB
+The goal of this project is to build an efficient KV (Key-Value) store with persistence in C++, with efficient retrieval using B Trees.
 
-This is a small project which I developed to implement a simple database system from scratch.
+Further goals include building a Query manager, concurrency control and supporting multithreading(the current implementation is single threaded)
 
-I built this project while following this online [course](https://15445.courses.cs.cmu.edu/fall2022/project1/)
+## Database file structure
+```
+/dbname
+    pagedata
+    metadata
+    freemap
+    lock
+```
+A database is represented on the disk as a collection of files, with `pagedata` containing the actual data, it is of size `PAGE_SIZE * number of pages`
+
+`metadata` consists of information about the database such as the page size, version, number of pages and other details
+
+`freemap` is a bitmap which represents free pages in the `pagedata` file
+
+`lock` is used so that only one db process can use the database files at one time
+
+## Classes
+
+`StorageBackend` is an abstract class which provides persistence for the pages, `DiskStorageBackend` is a concrete implementation which writes the pages to a file.
+
+`MemoryStorageBackend` keeps the pages in memory using a map of vectors, and is useful for testing.
+
+`BufferPool` is an interface to access the pages, it caches the pages and handles reading and writing them
+
+## Page format
+All pages are of size `4096` bytes or `4KB`, integer values are always stored in little-endian format.
+
+A page can be of three types - data page (which contains the data), internal B+ tree page, or B+ tree leaf page.
+
+### Common Page header for all B+ Tree pages
+
+| Offset | Size (in bytes) | Description                              |
+|--------|-----------------|------------------------------------------|
+| 0      | 1               | Page type                                |
+| 1      | 8               | Reserved for future use                  |
+| 9      | 4               | Page id of the current page              |
+| 13     | 4               | Page id of parent page (current, if root)|
+| 17     | 4               | Number of keys/values used in the page   |
+| 21     | 4               | Max number of keys/values in the page    |
+| 25     | 1               | Key type                                 |
+
+Where key type describes the data type of the key for the B+ Tree page, which can be one of the following
+
+| Key Type | Data type   | 
+|----------|-------------|
+| `'b'`    | uint8_t     |
+| `'B'`    | int8_t      |
+| `'s'`    | uint16_t    |
+| `'S'`    | int16_t     |
+| `'i'`    | uint32_t    |
+| `'I'`    | int32_t     |
+| `'l'`    | uint64_t    |
+| `'L'`    | int64_t     |
+| `'f'`    | float       |
+| `'d'`    | double      |
+| `'c'`    | string      |
+
+Key can have a maximum size of `64 bits` or `8 bytes`, strings require special handling to work.
+
+Total common header size is `26 bytes`
+
+### Page format for B+ Tree internal page
+Page type is set to `0x1`
+
+A B+ internal page stores `n` keys and `n+1` child links, that are page ids, `n` keys are stored first, followed by the child links.
+
+```
+| Key 1 | Key 2 | ..... | Key n | [Page link 1] | [Page link 2] | [Page link n+1] |
+```
+
+### Page format for B+ Tree leaf page
+Page type is set to `0x2`
+
+The leaf node contains `n` keys, followed by `n` values, similar to an internal node, values are always `64 bit` in length and represent a row id.
+
+```
+| Key 1 | Key 2 | ..... | Key n | [Value 1] | [Value 2] | [Value n] |
+```
+
+### Page format for data pages
+
+TODO
+
+## Tasks
+
+- [x] Implement page representation class
+- [x] Storage backend (Disk)
+- [x] Memory storage backend
+- [ ] Free page management (free list/bitmap) for disk storage
+- [ ] Metadata reader/writer implementation
+- [ ] Database lockfile
+- [x] Buffer pool manager
+- [ ] Extendible hash table
+- [x] Cache replacer
+- [ ] Simple KV store supporting only small strings 
+- [ ] Support for integers, floats
+- [ ] Arrays
+- [ ] BTrees and indices
+- [ ] Simple query parsers
+- [ ] REPL
+- [ ] Socket server for serving requests
+
 
 ## Features
 
