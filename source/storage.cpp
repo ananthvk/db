@@ -191,4 +191,4 @@ bool MemoryStorageBackend::close()
     return true;
 }
 
-MemoryStorageBackend::~MemoryStorageBackend() { close(); }
+MemoryStorageBackend::~MemoryStorageBackend() {}

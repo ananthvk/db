@@ -87,7 +87,11 @@ A B+ internal page stores `n` keys and `n+1` child links, that are page ids, `n`
 ### Page format for B+ Tree leaf page
 Page type is set to `0x2`
 
-The leaf node contains `n` keys, followed by `n` values, similar to an internal node, values are always `64 bit` in length and represent a row id.
+| Offset | Size (in bytes) | Description                              |
+|--------|-----------------|------------------------------------------|
+| 26     | 4               | Page id of next page(for range queries)  |
+
+The leaf node contains `n` keys, followed by `n` values, similar to an internal node. Values are always `64 bit` in length and represent a row id.
 
 ```
 | Key 1 | Key 2 | ..... | Key n | [Value 1] | [Value 2] | [Value n] |
