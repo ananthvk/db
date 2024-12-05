@@ -50,7 +50,7 @@ A page can be of three types - data page (which contains the data), internal B+ 
 | 0      | 1               | Page type                                |
 | 1      | 8               | Reserved for future use                  |
 | 9      | 4               | Page id of the current page              |
-| 13     | 4               | Page id of parent page (current, if root)|
+| 13     | 4               | Reserved                                 |
 | 17     | 4               | Number of keys/values used in the page   |
 | 21     | 4               | Max number of keys/values in the page    |
 | 25     | 1               | Key type                                 |
@@ -89,7 +89,9 @@ Page type is set to `0x2`
 
 | Offset | Size (in bytes) | Description                              |
 |--------|-----------------|------------------------------------------|
-| 26     | 4               | Page id of next page(for range queries)  |
+| 13     | 4               | Page id of next page(for range queries)  |
+
+The reserved field is used as link to next page in leaf nodes
 
 The leaf node contains `n` keys, followed by `n` values, similar to an internal node. Values are always `64 bit` in length and represent a row id.
 

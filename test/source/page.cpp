@@ -4,9 +4,9 @@
 
 using namespace pinedb;
 
-TEST_SUITE("btree")
+TEST_SUITE("page")
 {
-    TEST_CASE("BTree insertion only into root node")
-    {
+    TEST_CASE("Data page tests serialization/deserialization") {
+        
     }
 }

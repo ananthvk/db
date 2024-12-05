@@ -14,6 +14,7 @@ namespace pinedb
 {
     class BufferPool
     {
+      private:
         int number_of_frames;
         StorageBackend &storage_backend;
         CacheReplacer<frame_id_type> &cache_replacer;
@@ -58,16 +59,20 @@ namespace pinedb
          * Creates a new page, adds it to the buffer pool and returns the page id
          */
         page_id_type new_page();
+
         /**
          * Pins the page with the given page id, which ensures that the page
          * is not evicted before being unpinned.
+         * TODO: Implement this, currently not used
          */
-        bool pin_page(page_id_type pageid);
+        bool pin_page(page_id_type pageid) { return pageid >= 0; }
+
         /**
          * Unpins the page, so that the associated frame can be reused, i.e.
          * the page can be unloaded.
+         * TODO: Implement this, currently not used
          */
-        bool unpin_page(page_id_type pageid);
+        bool unpin_page(page_id_type pageid) { return pageid >= 0; }
 
         /**
          * Sets the page as dirty, i.e. data has been modified, this has to be called
@@ -80,6 +85,9 @@ namespace pinedb
          * Flushes all dirty pages to the disk
          */
         void flush_all();
+
+        // Returns the page size of the buffer pool
+        page_size_type page_size() const { return storage_backend.page_size(); }
     };
-};     // namespace pinedb
+}; // namespace pinedb
 #endif // PINEDB_BUFFERPOOL_H

@@ -54,13 +54,13 @@ set(headers
     ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/filehandle.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/pinedb.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/storage.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/page.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/pinedb/btree.h
 )
 set(sources
     ${CMAKE_CURRENT_SOURCE_DIR}/source/bufferpool.cpp 
     ${CMAKE_CURRENT_SOURCE_DIR}/source/pinedb.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/source/storage.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/source/btree.cpp
 )
 
 # ---- Create library ----
