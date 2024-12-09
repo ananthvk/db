@@ -4,7 +4,6 @@
 #include "bufferpool.h"
 #include "datapacker.h"
 
-
 namespace pinedb
 {
     // A catalog page holds data about the tables/collections
@@ -44,6 +43,10 @@ namespace pinedb
             {
                 int offset = i * 132;
                 std::string table_name = iter->first;
+                if (table_name.size() > 128)
+                {
+                    throw std::logic_error("Table name cannot be greater than 128 bytes");
+                }
                 uint32_t table_id = iter->second;
 
                 // Encode the table name
@@ -64,7 +67,8 @@ namespace pinedb
         bool load(uint8_t *buffer)
         {
             uint8_t identifier;
-            buffer += datapacker::bytes::decode_le(buffer, identifier, next_catalog_id, num_records_used);
+            buffer += datapacker::bytes::decode_le(buffer, identifier, next_catalog_id,
+                                                   num_records_used);
             if (identifier != PAGE_IDENTIFIER)
                 return false;
             for (int i = 0; i < num_records_used; ++i)
@@ -110,6 +114,13 @@ namespace pinedb
         auto erase(std::map<std::string, uint32_t>::iterator iter)
         {
             return table_name_table_id_map.erase(iter);
+        }
+
+        bool operator==(const CatalogPage &other) const
+        {
+            return num_records_used == other.num_records_used
+                   && next_catalog_id == other.next_catalog_id
+                   && table_name_table_id_map == other.table_name_table_id_map;
         }
     };
 } // namespace pinedb
