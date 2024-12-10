@@ -10,7 +10,7 @@
 </p>
 
 # PineDB
-The goal of this project is to build an efficient KV (Key-Value) store with persistence in C++, with efficient retrieval using B Trees.
+The goal of this project is to build an efficient record store with persistence in C++, with efficient retrieval using B Trees. This projects aims to build a simplified version of a SQL database as an academic exercise.
 
 Further goals include building a Query manager, concurrency control and supporting multithreading(the current implementation is single threaded)
 
@@ -114,7 +114,6 @@ TODO
 - [x] Buffer pool manager
 - [ ] Extendible hash table
 - [x] Cache replacer
-- [ ] Simple KV store supporting only small strings 
 - [ ] Support for integers, floats
 - [ ] Arrays
 - [ ] BTrees and indices
