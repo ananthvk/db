@@ -20,12 +20,14 @@ namespace pinedb
     class CatalogPage
     {
         uint8_t num_records_used = 0;
-        page_id_type next_catalog_id = 0;
         std::map<std::string, uint32_t> table_name_table_id_map;
 
       public:
+        page_id_type next_catalog_id = 0;
         static const uint8_t PAGE_IDENTIFIER = 0xC;
         static const uint8_t MAX_RECORDS = 30; // (4096-6) / 132
+
+        auto size() { return table_name_table_id_map.size(); }
 
         void save(uint8_t *buffer)
         {

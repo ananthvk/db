@@ -44,6 +44,8 @@ BufferPool::BufferPool(int number_of_frames, StorageBackend &storage_backend,
     free_frames.reserve(number_of_frames);
     for (auto i = 0; i < number_of_frames; ++i)
         free_frames.push_back(i);
+
+    // spdlog::set_level(spdlog::level::off);
 }
 
 uint8_t *BufferPool::fetch_page(page_id_type pageid)

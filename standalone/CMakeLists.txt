@@ -30,4 +30,4 @@ endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "PineDB")
 
-target_link_libraries(${PROJECT_NAME} PineDB::PineDB)
+target_link_libraries(${PROJECT_NAME} PineDB::PineDB fmt::fmt spdlog::spdlog)
