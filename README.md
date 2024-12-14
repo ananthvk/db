@@ -50,12 +50,25 @@ A page can be of three types - data page (which contains the data), internal B+ 
 | 0      | 1               | Page type                                |
 | 1      | 8               | Reserved for future use                  |
 | 9      | 4               | Page id of the current page              |
-| 13     | 4               | Reserved                                 |
-| 17     | 4               | Number of keys/values used in the page   |
-| 21     | 4               | Max number of keys/values in the page    |
-| 25     | 1               | Key type                                 |
+| 13     | 3               | Reserved for future use                  |
 
-Where key type describes the data type of the key for the B+ Tree page, which can be one of the following
+The common page header size is `16 bytes`
+
+### Table metadata page format
+
+A table metadata page contains metadata about a table in the database, it contains the table name, the type and number of columns, and name
+of the columns. It also contains the name of the columns.
+
+Page type is set to `0x54`
+
+| Offset | Size  | Name          | Description |
+|--------|-------|---------------|-------------|
+| 0      | 128   | table_name    | Fixed length string, unused space filled with `\0`, maximum length of table name is 128 characters|
+| 128    | 64    | column_format | Fixed length string, type of each column as a byte, max number of columns is 64|
+| 192    | 4     | table_page_id | Page id which contains the actual records (0 if table has no data)|
+| 196    | 59*64 | column_names  | Fixed length column names, of max size 59 characters |
+
+Where each byte in column_format is one of the following
 
 | Key Type | Data type   | 
 |----------|-------------|
@@ -71,37 +84,25 @@ Where key type describes the data type of the key for the B+ Tree page, which ca
 | `'d'`    | double      |
 | `'c'`    | string      |
 
-Key can have a maximum size of `64 bits` or `8 bytes`, strings require special handling to work.
+## Command line usage
 
-Total common header size is `26 bytes`
+For simplicity in parsing, all commands are single line, terminated by a newline
 
-### Page format for B+ Tree internal page
-Page type is set to `0x1`
-
-A B+ internal page stores `n` keys and `n+1` child links, that are page ids, `n` keys are stored first, followed by the child links.
-
+List all tables in the database
 ```
-| Key 1 | Key 2 | ..... | Key n | [Page link 1] | [Page link 2] | [Page link n+1] |
+> list tables
 ```
 
-### Page format for B+ Tree leaf page
-Page type is set to `0x2`
-
-| Offset | Size (in bytes) | Description                              |
-|--------|-----------------|------------------------------------------|
-| 13     | 4               | Page id of next page(for range queries)  |
-
-The reserved field is used as link to next page in leaf nodes
-
-The leaf node contains `n` keys, followed by `n` values, similar to an internal node. Values are always `64 bit` in length and represent a row id.
-
+To create a table
 ```
-| Key 1 | Key 2 | ..... | Key n | [Value 1] | [Value 2] | [Value n] |
+> create table table_name columnn_1_name column_1_type [column_2_name] [column_2_type] ...
 ```
 
-### Page format for data pages
+To view information about a table
 
-TODO
+```
+> describe [table_name]
+```
 
 ## Tasks
 
