@@ -84,6 +84,11 @@ Where each byte in column_format is one of the following
 | `'d'`    | double      |
 | `'c'`    | string      |
 
+### `sys_tables` Table
+
+This is a special purpose table which holds data about other tables and database implementation information, it's table metadata page is always at page `0`
+
+
 ## Command line usage
 
 For simplicity in parsing, all commands are single line, terminated by a newline

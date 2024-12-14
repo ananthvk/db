@@ -7,34 +7,36 @@ using namespace pinedb;
 
 TEST_SUITE("page")
 {
-    TEST_CASE("Catalog page tests storing of table name")
+    TEST_CASE("Page header tests")
     {
-        CatalogPage catalog, catalog1, catalog2;
+        PageHeader header;
+        header.set_page_id(3);
+        header.set_page_type(0x54);
         uint8_t buffer[4096];
-        uint8_t buffer1[4096];
+        CHECK_EQ(header.write(buffer), buffer + 16);
 
-        catalog["table1"] = 1312;
-        catalog["thisisanothertablename"] = 146;
-        catalog["t3"] = 64;
-        catalog["x"] = 5123332;
-        catalog[std::string(126, 'x')] = 322341;
-        catalog[std::string(127, 'y')] = 322341;
-        catalog[std::string(128, 'z')] = 322341;
-        catalog.save(buffer);
+        PageHeader header2;
+        CHECK_EQ(header2.read(buffer), buffer + 16);
+        CHECK_EQ(header2.get_page_id(), 3);
+        CHECK_EQ(header.get_page_type(), 0x54);
+    }
+    TEST_CASE("Table metadata tests")
+    {
+        uint8_t buffer[4096] = {0};
+        TableMetadataPage meta(buffer + 16);
+        meta.set_column_format("iiSSdf");
+        meta.set_table_name("Test table name");
+        meta.set_column_name(0, "first column name");
+        meta.set_column_name(1, "second column name");
+        meta.set_column_name(31, "column_d");
+        meta.set_table_page_id(3132);
 
-        catalog1.load(buffer);
-        CHECK_EQ(catalog1["table1"], 1312);
-        CHECK_EQ(catalog1["thisisanothertablename"], 146);
-        CHECK_EQ(catalog1["t3"], 64);
-        CHECK_EQ(catalog1["x"], 5123332);
-        CHECK_EQ(catalog[std::string(126, 'x')] , 322341);
-        CHECK_EQ(catalog[std::string(127, 'y')] , 322341);
-        CHECK_EQ(catalog[std::string(128, 'z')] , 322341);
-        
-        catalog1.save(buffer1);
-        catalog2.load(buffer1);
-
-        CHECK_EQ(catalog1, catalog2);
-        CHECK_EQ(catalog, catalog1);
+        TableMetadataPage meta2(buffer + 16);
+        CHECK_EQ(meta2.get_column_format(), "iiSSdf");
+        CHECK_EQ(meta2.get_table_name(), "Test table name");
+        CHECK_EQ(meta2.get_table_page_id(), 3132);
+        CHECK_EQ(meta.get_column_name(0), "first column name");
+        CHECK_EQ(meta.get_column_name(1), "second column name");
+        CHECK_EQ(meta.get_column_name(31), "column_d");
     }
 }

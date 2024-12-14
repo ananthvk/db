@@ -6,124 +6,219 @@
 
 namespace pinedb
 {
-    // A catalog page holds data about the tables/collections
-    // Format:
-    // Page identifier        | 1 byte
-    // Next catalog page id   | 4 byte
-    // Number of records used | 1 byte
-    // A set of records which follow the following format
-    // [Table name 128 bytes (including terminal \0)] | [Table id 4 bytes]
-
-    // A catalog record is fixed length of 132 bytes, so in a 4096 byte page, 30 such records can be
-    // stored, after which the next record has to be examined
-
-    class CatalogPage
+    std::string read_fixed_length_string(uint8_t *buffer, size_t string_length)
     {
-        uint8_t num_records_used = 0;
-        std::map<std::string, uint32_t> table_name_table_id_map;
+        std::string result;
+        result.reserve(string_length);
+        for (size_t i = 0; i < string_length; ++i)
+        {
+            if (buffer[i] == '\0')
+                break;
+            result.push_back(static_cast<char>(buffer[i]));
+        }
+        return result;
+    }
+
+    void write_fixed_length_string(uint8_t *buffer, const std::string &s, size_t string_length)
+    {
+        if (s.size() > string_length)
+        {
+            throw std::runtime_error("Length exceeds maximum permitted length"
+                                     + std::to_string(string_length));
+        }
+        for (size_t i = 0; i < s.size(); ++i)
+        {
+            *buffer++ = static_cast<uint8_t>(s[i]);
+        }
+        for (auto i = s.size(); i < string_length; ++i)
+        {
+            *buffer++ = '\0';
+        }
+    }
+
+    class PageHeader
+    {
+        uint8_t page_type;
+        page_id_type page_id;
 
       public:
-        page_id_type next_catalog_id = 0;
-        static const uint8_t PAGE_IDENTIFIER = 0xC;
-        static const uint8_t MAX_RECORDS = 30; // (4096-6) / 132
+        PageHeader() : page_type(0), page_id(0) {}
 
-        auto size() { return table_name_table_id_map.size(); }
-
-        void save(uint8_t *buffer)
+        // Write page header
+        uint8_t *write(uint8_t *buffer)
         {
-            num_records_used = table_name_table_id_map.size();
-            auto initial_offset = datapacker::bytes::encode_le(buffer, PAGE_IDENTIFIER,
-                                                               next_catalog_id, num_records_used);
-            if (table_name_table_id_map.size() > 30)
+            uint64_t reserved = 0;
+            uint8_t reserved_byte = 0;
+            return buffer
+                   + datapacker::bytes::encode_le(buffer, page_type, reserved, page_id,
+                                                  reserved_byte, reserved_byte, reserved_byte);
+        }
+
+        uint8_t *read(uint8_t *buffer)
+        {
+            uint64_t reserved = 0;
+            uint8_t reserved_byte = 0;
+            return buffer
+                   + datapacker::bytes::decode_le(buffer, page_type, reserved, page_id,
+                                                  reserved_byte, reserved_byte, reserved_byte);
+        }
+
+        uint8_t get_page_type() const { return page_type; }
+
+        page_id_type get_page_id() const { return page_id; }
+
+        void set_page_type(uint8_t page_type) { this->page_type = page_type; }
+
+        void set_page_id(page_id_type page_id) { this->page_id = page_id; }
+    };
+
+    class ColumnFormat
+    {
+      public:
+        static char validate_format(const std::string &format_string)
+        {
+            for (const auto ch : format_string)
             {
-                throw std::logic_error("More than 30 records cannot be stored in one catalog page");
+                if (!(ch == 'b' || ch == 'B' || ch == 's' || ch == 'S' || ch == 'i' || ch == 'I'
+                      || ch == 'l' || ch == 'L' || ch == 'f' || ch == 'd' || ch == 'c'))
+                    return ch;
             }
-            buffer = buffer + initial_offset;
+            return '\0';
+        }
 
-            auto iter = table_name_table_id_map.begin();
-            for (int i = 0; i < num_records_used; ++i)
+        static std::string human_readable_format(char ch)
+        {
+            std::string name;
+            switch (ch)
             {
-                int offset = i * 132;
-                std::string table_name = iter->first;
-                if (table_name.size() > 128)
-                {
-                    throw std::logic_error("Table name cannot be greater than 128 bytes");
-                }
-                uint32_t table_id = iter->second;
-
-                // Encode the table name
-                for (size_t j = 0; j < 128; ++j)
-                {
-                    if (j < table_name.size())
-                        buffer[offset + j] = static_cast<uint8_t>(table_name[j]);
-                    else
-                        buffer[offset + j] = 0;
-                }
-
-                // Encode the table id
-                datapacker::bytes::encode_le(buffer + offset + 128, table_id);
-                ++iter;
+            case 'b':
+                name = "unsigned byte";
+                break;
+            case 'B':
+                name = "byte";
+                break;
+            case 's':
+                name = "unsigned short";
+                break;
+            case 'S':
+                name = "short";
+                break;
+            case 'i':
+                name = "unsigned int";
+                break;
+            case 'I':
+                name = "int";
+                break;
+            case 'l':
+                name = "unsigned long";
+                break;
+            case 'L':
+                name = "long";
+                break;
+            case 'f':
+                name = "float";
+                break;
+            case 'd':
+                name = "double";
+                break;
+            case 'c':
+                name = "string";
+                break;
+            default:
+                throw std::logic_error("invalid format string");
             }
+            return name;
         }
 
-        bool load(uint8_t *buffer)
+        static std::vector<std::string> human_readable_format(const std::string &format_string)
         {
-            uint8_t identifier;
-            buffer += datapacker::bytes::decode_le(buffer, identifier, next_catalog_id,
-                                                   num_records_used);
-            if (identifier != PAGE_IDENTIFIER)
-                return false;
-            for (int i = 0; i < num_records_used; ++i)
+            std::vector<std::string> result;
+            for (const auto ch : format_string)
             {
-                int offset = i * 132;
-                std::string table_name(128, '\0');
-                for (int j = 0; j < 128; ++j)
-                {
-                    // If it is null, do not add it to the string
-                    if (buffer[offset + j] == 0)
-                    {
-                        table_name.resize(j);
-                        break;
-                    }
-                    table_name[j] = (static_cast<char>(buffer[offset + j]));
-                }
-                uint32_t table_id;
-                datapacker::bytes::decode_le(buffer + offset + 128, table_id);
-                table_name_table_id_map[table_name] = table_id;
+                result.push_back(human_readable_format(ch));
             }
-
-            return true;
-        }
-
-        auto begin() { return table_name_table_id_map.begin(); }
-
-        auto end() { return table_name_table_id_map.end(); }
-
-        auto cbegin() const { return table_name_table_id_map.cbegin(); }
-
-        auto cend() const { return table_name_table_id_map.cend(); }
-
-        uint32_t &operator[](const std::string &table_name)
-        {
-            return table_name_table_id_map[table_name];
-        }
-
-        bool exists(const std::string &table_name)
-        {
-            return table_name_table_id_map.find(table_name) != table_name_table_id_map.end();
-        }
-
-        auto erase(std::map<std::string, uint32_t>::iterator iter)
-        {
-            return table_name_table_id_map.erase(iter);
-        }
-
-        bool operator==(const CatalogPage &other) const
-        {
-            return num_records_used == other.num_records_used
-                   && next_catalog_id == other.next_catalog_id
-                   && table_name_table_id_map == other.table_name_table_id_map;
+            return result;
         }
     };
+
+    class TableMetadataPage
+    {
+        uint8_t *buffer;
+
+      public:
+        static const uint8_t PAGE_TYPE = 0x54;
+        static const int MAX_TABLE_NAME_LENGTH = 128;
+        static const int MAX_NUMBER_OF_COLUMNS = 64;
+        static const int MAX_COLUMN_NAME_LENGTH = 59;
+
+        // The buffer passed here is not the page buffer, but the page data buffer
+        // which is after the page header
+        TableMetadataPage(uint8_t *buffer) : buffer(buffer) {}
+
+        std::string get_table_name() const
+        {
+            return read_fixed_length_string(buffer, MAX_TABLE_NAME_LENGTH);
+        }
+
+        void set_table_name(const std::string &name)
+        {
+            write_fixed_length_string(buffer, name, MAX_TABLE_NAME_LENGTH);
+        }
+
+        std::string get_column_format() const
+        {
+            return read_fixed_length_string(buffer + MAX_TABLE_NAME_LENGTH, MAX_NUMBER_OF_COLUMNS);
+        }
+
+        void set_column_format(const std::string &format)
+        {
+            if (ColumnFormat::validate_format(format) != '\0')
+            {
+                throw std::runtime_error("invalid column data type: "
+                                         + std::string(1, ColumnFormat::validate_format(format)));
+            }
+            write_fixed_length_string(buffer + MAX_TABLE_NAME_LENGTH, format,
+                                      MAX_NUMBER_OF_COLUMNS);
+        }
+
+        void set_table_page_id(page_id_type page_id)
+        {
+            datapacker::bytes::encode_le(buffer + MAX_TABLE_NAME_LENGTH + MAX_NUMBER_OF_COLUMNS,
+                                         page_id);
+        }
+
+        int number_of_columns() const { return get_column_format().size(); }
+
+        page_id_type get_table_page_id() const
+        {
+            page_id_type page_id = 0;
+            datapacker::bytes::decode_le(buffer + MAX_TABLE_NAME_LENGTH + MAX_NUMBER_OF_COLUMNS,
+                                         page_id);
+            return page_id;
+        }
+
+        std::string get_column_name(int index) const
+        {
+            if (index > MAX_NUMBER_OF_COLUMNS)
+            {
+                throw std::logic_error("column index exceeds max number of columns");
+            }
+            auto offset = MAX_TABLE_NAME_LENGTH + MAX_NUMBER_OF_COLUMNS + sizeof(page_id_type);
+            offset += index * MAX_COLUMN_NAME_LENGTH;
+            return read_fixed_length_string(buffer + offset, MAX_COLUMN_NAME_LENGTH);
+        }
+
+        void set_column_name(int index, const std::string &s)
+        {
+            if (index > MAX_NUMBER_OF_COLUMNS)
+            {
+                throw std::logic_error("column index exceeds max number of columns");
+            }
+            auto offset = MAX_TABLE_NAME_LENGTH + MAX_NUMBER_OF_COLUMNS + sizeof(page_id_type);
+            offset += index * MAX_COLUMN_NAME_LENGTH;
+            write_fixed_length_string(buffer + offset, s, MAX_COLUMN_NAME_LENGTH);
+        }
+    };
+
 } // namespace pinedb
 #endif
