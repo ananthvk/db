@@ -6,7 +6,5 @@ using namespace pinedb;
 
 TEST_SUITE("btree")
 {
-    TEST_CASE("BTree insertion only into root node")
-    {
-    }
+    TEST_CASE("BTree insertion only into root node") {}
 }

@@ -89,5 +89,5 @@ namespace pinedb
         // Returns the page size of the buffer pool
         page_size_type page_size() const { return storage_backend.page_size(); }
     };
-}; // namespace pinedb
+};     // namespace pinedb
 #endif // PINEDB_BUFFERPOOL_H

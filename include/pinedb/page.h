@@ -6,7 +6,7 @@
 
 namespace pinedb
 {
-    std::string read_fixed_length_string(uint8_t *buffer, size_t string_length)
+    inline std::string read_fixed_length_string(uint8_t *buffer, size_t string_length)
     {
         std::string result;
         result.reserve(string_length);
@@ -19,7 +19,8 @@ namespace pinedb
         return result;
     }
 
-    void write_fixed_length_string(uint8_t *buffer, const std::string &s, size_t string_length)
+    inline void write_fixed_length_string(uint8_t *buffer, const std::string &s,
+                                          size_t string_length)
     {
         if (s.size() > string_length)
         {
